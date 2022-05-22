@@ -1,95 +1,101 @@
 const game = () => {
-    
-    document.getElementById("demo").addEventListener("mouseover", mouseOver);
-    document.getElementById("demo").addEventListener("mouseout", mouseOut);
-
-    function mouseOver() {
-    document.getElementById("demo").style.color = "red";
-    }
-
-    function mouseOut() {
-    document.getElementById("demo").style.color = "black";
-    }
-
-
 
     const container = document.querySelector(".container");
+    let widthCon = 600;
+    let heightCon = 600;
+    container.style.width = `${widthCon}px`;
+    container.style.height = `${heightCon}px`;
 
-    let arrayRow = new Array(16);
-    for (let i=0; i<arrayRow.length; i++) {
-        arrayRow[i] = new Array(16); 
-    } 
+    let size = 16;
+    let round = 1;
 
-    for (let row=0; row<16; row++) {
-        const rowDiv =  document.createElement("div");
-        rowDiv.style.clear = 'both';
-        container.appendChild(rowDiv);
+    const updateGrid = (size) => {
 
-        console.log("row "+row);
-
-        for (let col=0; col<16; col++) {
-            const square = document.createElement("div");
-            console.log(row.toString()+"-"+col.toString());
-            square.setAttribute('id',row.toString()+"-"+col.toString());
-            square.setAttribute('class','cell');
-            square.style.width = "20px";
-            square.style.height = "20px"; 
-            square.style.backgroundColor = 'yellow';
-            square.style.boxSizing = "border-box";
-            square.style.borderStyle = "solid";
-            square.style.borderWidth = '1px'; 
-            square.style.borderColor = "black";
-            square.style.cssFloat = "left";
-            rowDiv.appendChild(square); 
-
-            arrayRow[row][col] = square;
-
-            // square.addEventListener("click")
+        if (round!==1) {
+            for (const row of document.querySelectorAll(".rowDiv")) {
+                row.removeAttribute("class");
+                row.remove();
+            }
+            for (const element of document.querySelectorAll(".cell")) {
+                element.removeAttribute("id");
+                element.remove();
+            }
         }
-        console.log("\n");
+        round++;
+        
+        for (let row=0; row<size; row++) {
+
+            const rowDiv =  document.createElement("div");
+            rowDiv.setAttribute('class','rowDiv');
+            rowDiv.style.clear = 'both';
+            rowDiv.style.display = "flex";
+            rowDiv.style.backgroundColor = "DAD7CD";
+            let height = heightCon/size;
+            rowDiv.style.height = `${height.toString()}px`;
+
+            container.appendChild(rowDiv);
+    
+            console.log("row "+row);
+    
+            for (let col=0; col<size; col++) {
+                const square = document.createElement("div");
+                console.log(row.toString()+"-"+col.toString());
+                square.setAttribute('id',row.toString()+"-"+col.toString());
+                square.setAttribute('class','cell');
+                square.style.backgroundColor = "E97020";
+                square.style.boxSizing = "border-box";
+                square.style.borderStyle = "solid";
+                square.style.borderWidth = '1px'; 
+                square.style.borderColor = "black";
+                square.style.flex = "auto";
+                rowDiv.appendChild(square); 
+    
+            }
+        }
+
+        const randomColor = () => {
+            let randNum = Math.floor(Math.random() * 4) + 1;
+            if (randNum === 1) { 
+                return "A3B18A";
+            } else if (randNum === 2) {
+                return "344E41";
+            } else if (randNum === 3) {
+                return "3A5A40";
+            } else {
+                return "588157";
+            } 
+        }
+
+        document.addEventListener('mouseover', function (event) {
+
+            if (event.target.matches('.cell')) {
+                // Run your code to open a modal
+                console.log(event.target.id);
+                console.log(event.target);
+                document.getElementById(event.target.id).style.backgroundColor = randomColor();
+            }
+
+        
+        }, false);
+    
     }
 
-    // console.log(arrayRow);
+    const promptGridSize = () => {
+        let num = size;
+        do {
+            num = prompt("Enter size of grid: (max 100)");
+        } while (num > 100);
+        size = num; 
+        updateGrid(Number(num));
+    }
 
-    const testDiv = document.createElement('div');
-    testDiv.style.clear = 'both';
-    testDiv.style.width = "50px";
-    testDiv.style.height = "50px";
-    testDiv.style.backgroundColor = "yellow";
-    container.appendChild(testDiv);
-
-    document.addEventListener('mouseover', function (event) {
-
-        if (event.target.matches('.cell')) {
-            // Run your code to open a modal
-            console.log(event.target.id);
-            console.log(event.target);
-            // console.log(document.getElementById(event.target.id));
-            document.getElementById(event.target.id).style.backgroundColor = "red";
+    document.addEventListener('click', function (event) {
+        if (event.target.matches('.button')) {
+            promptGridSize();
         }
-
-    
     }, false);
 
-    // testDiv.addEventListener("click",mouseOver(testDiv));
-    // // testDiv.addEventListener("mouseout",mouseOut(testDiv));
-
-
-    // // for (let r=0; r<16; r++) {
-    // //     arrayRow[r].forEach(sq => {
-    // //         sq.addEventListener('mouseover', changeColor(sq));
-    // //     }
-    // //     )
-    // // }
-
-    function mouseOver(elem) {
-        // elem.style.backgroundColor = "green";
-        console.log("hi");
-    }
-    // function mouseOut(elem) {
-    //     elem.style.backgroundColor = "yellow";
-    // }
-    
+    updateGrid(size);
 
 }
 
